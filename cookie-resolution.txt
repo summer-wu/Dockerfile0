@@ -1,0 +1,57 @@
+
+#phantom中的cookie结构 require('utils').dump(phantom.cookies);
+[
+    {
+        "domain": "www.baidu.com",
+        "expires": "周四, 17 9月 2015 17:13:59 GMT",
+        "expiry": 1442510039,
+        "httponly": false,
+        "name": "BD_UPN",
+        "path": "/",
+        "secure": false,
+        "value": "143254"
+    }
+
+
+
+#phantom的addCookie格式
+phantom.addCookie({
+  'name': 'Added-Cookie-Name',
+  'value': 'Added-Cookie-Value',
+  'domain': '.google.com'
+});
+
+var webPage = require('webpage');
+var page = webPage.create();
+
+page.addCookie({
+  'name'     : 'Valid-Cookie-Name',   /* required property */
+  'value'    : 'Valid-Cookie-Value',  /* required property */
+  'domain'   : 'localhost',
+  'path'     : '/foo',                /* required property */
+  'httponly' : true,
+  'secure'   : false,
+  'expires'  : (new Date()).getTime() + (1000 * 60 * 60)   /* <-- expires in 1 hour 1441725863910 单位是ms毫秒*/
+});
+
+#chrome cookie-inspector中导出的结构
+[
+  {
+    "domain": ".google.com", 匹配phantom的domain
+    "expirationDate": 1483946084.314763, 匹配phantom的expires但这里是秒。
+    "hostOnly": false,
+    "httpOnly": true,
+    "name": "HSID",
+    "path": "/",
+    "secure": false,
+    "session": false,
+    "storeId": "0",
+    "value": "Ag_Z4NW6gCc6htC94",
+    "id": 1
+  },
+
+#导入
+var fs = require('fs');
+var cookies = JSON.stringify(phantom.cookies);
+var data = fs.read(cookieFilename);
+phantom.cookies = JSON.parse(data);
